@@ -24,7 +24,7 @@ public class PaymentCard extends BaseAuditEntity {
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_payment_cards_user"))
     private User user;
 
-    @Column(name = "number", nullable = false, length = 19)
+    @Column(name = "number", nullable = false, length = 19, unique = true)
     private String number;
 
     @Column(name = "holder", nullable = false, length = 200)

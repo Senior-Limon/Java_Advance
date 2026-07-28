@@ -27,6 +27,7 @@ databaseChangeLog:
                   type: VARCHAR(19)
                   constraints:
                     nullable: false
+                    unique: true
               - column:
                   name: holder
                   type: VARCHAR(200)
