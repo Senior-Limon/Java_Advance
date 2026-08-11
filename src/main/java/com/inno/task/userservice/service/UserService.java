@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UserService {
 
+    private final UserEventPublisher userEventPublisher;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
@@ -56,20 +57,28 @@ public class UserService {
         log.info("Updating user with id: {}", id);
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + id));
-
+        String oldEmail = user.getEmail();
         userMapper.updateEntity(request, user);
+        User savedUser = userRepository.save(user);
+        if (!oldEmail.equals(savedUser.getEmail())) {
+            userEventPublisher.publishEmailUpdate(oldEmail, oldEmail, savedUser.getEmail());
+        }
         log.info("User {} updated successfully", id);
-        return userMapper.toResponse(userRepository.save(user));
+        return userMapper.toResponse(savedUser);
     }
 
     //actv/deactv
     @Transactional
     @CacheEvict(value = USER_CACHE, key = "#id")
     public void setActiveStatus(Long id, boolean active) {
+        String login = userRepository.findEmailById(id)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + id));
+
         int updated = userRepository.setActiveStatus(id, active);
         if (updated == 0) {
             throw new NotFoundException("User not found with id: " + id);
         }
+        userEventPublisher.publishStatusChange(login, active);
         log.info(active ? "activate user with id: {}" : "deactivate user with id: {}", id);
     }
 
