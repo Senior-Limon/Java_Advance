@@ -1,6 +1,7 @@
 package com.inno.task.authentication_service.service;
 
 import com.inno.task.authentication_service.dto.AuthenticateRequest;
+import com.inno.task.authentication_service.dto.CreateUserRequest;
 import com.inno.task.authentication_service.dto.RegisterRequest;
 import com.inno.task.authentication_service.dto.TokenResponse;
 import com.inno.task.authentication_service.entity.Role;
@@ -12,6 +13,7 @@ import com.inno.task.authentication_service.mapper.UserMapper;
 import com.inno.task.authentication_service.repository.UserRepository;
 import com.inno.task.authentication_service.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.client.RestClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +29,7 @@ public class AuthService{
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final RestClient restClient;
 
     @Transactional(readOnly = true)
     public TokenResponse login(AuthenticateRequest request) {
@@ -55,13 +58,32 @@ public class AuthService{
             throw new UserAlreadyExistsException("Login '" + request.getLogin() + "' is already taken");
         }
 
-        User user = userMapper.toEntity(request);
-        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        User authUser = userMapper.toEntity(request);
+        authUser.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        authUser.setActive(true);
+        userRepository.save(authUser);
 
-        User savedUser = userRepository.save(user);
-        log.info("User {} registered successfully with role {}", savedUser.getLogin(), savedUser.getRole());
+        try {
+            CreateUserRequest profileRequest = new CreateUserRequest();
+            profileRequest.setEmail(request.getLogin()); // email = login
+            profileRequest.setName(request.getLogin());
 
-        return buildTokenResponse(savedUser);
+            restClient.post()
+                    .uri("/internal/users")
+                    .body(profileRequest)
+                    .retrieve()
+                    .toBodilessEntity();
+
+            log.info("Profile created in User Service for login: {}", request.getLogin());
+
+        } catch (Exception e) {
+            log.error("Failed to create profile in User Service for login: {}. Rolling back.",
+                    request.getLogin(), e);
+            throw new RuntimeException("Failed to sync with User Service", e);
+        }
+
+        log.info("User {} registered successfully", authUser.getLogin());
+        return buildTokenResponse(authUser);
     }
 
     @Transactional(readOnly = true)
