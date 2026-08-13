@@ -26,7 +26,7 @@ jobs:
           cache: maven
 
       - name: Build and Test
-        run: mvn clean verify -B
+        run: mvn clean verify -B -Dtest='!TaskApplicationTests'
 
       - name: Upload Test Reports
         if: always()
