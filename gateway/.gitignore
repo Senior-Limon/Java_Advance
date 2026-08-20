@@ -1,0 +1,90 @@
+# Secrets & Environment
+.env
+.env.*
+!.env.example
+
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
+
+# Build Targets
+HELP.md
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+.idea_modules/
+out/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+*.log
+logs/
+
+# Testing
+coverage/
+.nyc_output/
+test-output/
+surefire-reports/
+failsafe-reports/
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# Database
+*.db
+*.sqlite
+*.h2.db
+*.mv.db
+
+# Misc
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.truststore
+*.key
+*.pem
+*.crt
+*.csr
+*.hprof
+*.heapdump
+*.dump
+*.orig
+*.bak
+*.swp
+*.swo
+*~
