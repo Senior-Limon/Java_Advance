@@ -1,5 +1,6 @@
-# Secrets
+# Secrets & Environment
 .env
+.env.*
 !.env.example
 
 # Build
@@ -7,6 +8,11 @@ target/
 build/
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+# Maven Wrapper
+mvnw
+mvnw.cmd
+.mvn/
 
 # IDE
 .idea/
@@ -26,3 +32,5 @@ build/
 Thumbs.db
 logs/
 *.log
+*.tmp
+*.temp
