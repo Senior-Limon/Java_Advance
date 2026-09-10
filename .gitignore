@@ -13,6 +13,11 @@ build/
 mvnw
 mvnw.cmd
 .mvn/
+.mvn/wrapper/
+**/.mvn/
+**/.mvn/wrapper/
+**/mvnw
+**/mvnw.cmd
 
 # IDE
 .idea/

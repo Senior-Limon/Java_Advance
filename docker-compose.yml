@@ -40,6 +40,22 @@ services:
     networks:
       - microservices-net
 
+  mongo:
+    image: mongo:7-jammy
+    container_name: platform-mongo
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    volumes:
+      - mongodata:/data/db
+    networks:
+      - microservices-net
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s    
+
   kafka:
     image: confluentinc/cp-kafka:7.6.0
     container_name: platform-kafka
@@ -140,9 +156,32 @@ services:
     networks:
       - microservices-net
 
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: payment-service
+    ports:
+      - "${PAYMENT_SERVICE_PORT:-8084}:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      JWT_SECRET: ${JWT_SECRET}
+      MONGO_DB_NAME: ${MONGO_DB_NAME:-payment_db}
+      MONGO_PORT: ${MONGO_PORT:-27017}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      mongo:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
 networks:
   microservices-net:
     driver: bridge
 
 volumes:
   pgdata:
+  mongodata: 
