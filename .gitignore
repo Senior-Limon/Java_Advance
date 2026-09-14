@@ -1,5 +1,6 @@
 # Secrets & Environment
 .env
+k8s/01-secrets.yaml
 .env.*
 !.env.example
 
