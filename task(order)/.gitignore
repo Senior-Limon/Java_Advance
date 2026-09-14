@@ -42,45 +42,7 @@ out/
 
 # VS Code
 .vscode/
-# Secrets & Environment
-.env
-k8s/01-secrets.yaml
-.env.*
-!.env.example
-
-#
-target/
-build/
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-# Maven Wrapper
-mvnw
-mvnw.cmd
-.mvn/
-.mvn/wrapper/
-**/.mvn/
-**/.mvn/wrapper/
-**/mvnw
-**/mvnw.cmd
-
-# IDE
-.idea/
-*.iml
-*.iws
-*.ipr
-.vscode/
-.classpath
-.project
-.settings/
-.factorypath
-.sts4-cache
-.apt_generated
 
 # OS
 .DS_Store
 Thumbs.db
-logs/
-*.log
-*.tmp
-*.temp

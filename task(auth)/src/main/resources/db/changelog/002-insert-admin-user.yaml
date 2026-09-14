@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-insert-admin-user
+      author: Senior-Limon
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: login
+                  value: admin
+              - column:
+                  name: password_hash
+                  # BCrypt hash for "admin123"
+                  value: "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi"
+              - column:
+                  name: role
+                  value: ADMIN
+              - column:
+                  name: active
+                  valueBoolean: true
+              - column:
+                  name: created_at
+                  valueDate: CURRENT_DATE
+              - column:
+                  name: updated_at
+                  valueDate: CURRENT_DATE
